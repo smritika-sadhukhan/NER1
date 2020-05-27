@@ -65,11 +65,10 @@ import pickle
 
 
 """# **LOAD DATA**"""
-diri='/content/Ner_pack/'
-df = pd.read_csv(diri+'ner_dataset.csv', encoding = "ISO-8859-1")
-word_to_index=pickle.load(open(diri+'word_to_index.pickle','rb'))
-tag_to_index=pickle.load(open(diri+'tag_to_index.pickle','rb'))
-model= load_model(diri+"model1.h5",custom_objects={'CRF':CRF, 
+df = pd.read_csv('/content/NER1/Ner_pack/Dataset/ner_dataset.csv', encoding = "ISO-8859-1")
+word_to_index=pickle.load(open('/content/NER1/Ner_pack/ner_files/word_to_index.pickle','rb'))
+tag_to_index=pickle.load(open('/content/NER1/Ner_pack/ner_files/tag_to_index.pickle','rb'))
+model= load_model('/content/NER1/Ner_pack/model/model1.h5',custom_objects={'CRF':CRF, 
                                                   'crf_loss':crf_loss, 
                                                   'crf_viterbi_accuracy':crf_viterbi_accuracy})
 
@@ -264,3 +263,39 @@ def AI_entity(s):
   
 
   return(dict)
+
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+def test():
+    print('Testing Rule_based model')  
+    print(' '*50)
+
+    s='i want to fly from mumbai to kolkata on 2nd may with 3000 $'
+    if ({'date': '2nd may','destination': 'kolkata','money': '3000 $','start': 'mumbai'}==RB_entity(s)):
+      print('    RB_PASSED')
+    else:
+      print('    RB_FAILED')
+    print(' '*50)
+    print('*'*50)
+    print('Testing AI_based model')
+    print(' '*50)
+
+    s="The Afghan president 's office has responded to criticism by Pakistani President Pervez Musharraf , insisting its intelligence on terrorists hiding in Pakistan is correct"
+    if ({'B-geo': 'Pakistan','B-gpe': 'Pakistani', 'B-per': 'President', 'I-per': 'Musharraf'}==AI_entity(s)):
+      print('    AI_PASSED')
+    else:
+      print('    AI_FAILED')
+    print(' '*50)
+
+    print('*'*50)
+    print(' '*50)
+
+    print('Testing AI AND Rule_based model')
+    print(' '*50)
+
+    s='Trump  wants  to fly from delhi to kolkata on 2nd may, saturday in the morning 10 pm'
+    if ({'B-org': '2nd','B-per': 'Trump','B-tim': 'morning','I-org': 'Bermel','I-tim': '10','date': '2nd may','destination': 'kolkata','start': 'delhi','time': '10 pm'}==AI_RB_entity(s)):
+      print('    RB_AI_PASSED')
+    else:
+      print('    RB_AI_FAILED')
